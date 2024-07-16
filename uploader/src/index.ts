@@ -6,12 +6,13 @@ import fs from "fs";
 import path from "path";
 import { S3 } from "aws-sdk";
 import dotenv from "dotenv"
-
+import { getAllFiles } from "./lib";
 
 const app = express();
 
-dotenv.config()
+dotenv.config();
 app.use(express.json());
+app.use(cors());
 
 app.post("/deploy", async (req: Request, res: Response) => {
 
@@ -41,19 +42,12 @@ app.post("/deploy", async (req: Request, res: Response) => {
     return;
   }
 
-  const folders = fs.readdirSync(baseDirectory + "/" + randomId, {
-    recursive: true,
-    encoding: "utf-8",
-  });
-  const filesPath = folders.map((folder) => {
-    return path.join(baseDirectory, randomId, folder);
-  });
+  const allFiles = getAllFiles(baseDirectory+"/"+randomId);
 
-  filesPath.forEach(file => {
-    console.log(file);
-    
-    // const fileData = fs.readFileSync(file,{encoding:"utf-8"})
-    // console.log(fileData);
+  allFiles.forEach( async (file) => {
+    const fileData = fs.readFileSync(file,{encoding:"utf-8"})
+   s3.upload({Bucket: "deployhub",Key: file.slice(baseDirectory.length + 1),Body: fileData},(err, data) =>{console.log("uploaded sucessfully");
+   })
   })
 
   res.json({

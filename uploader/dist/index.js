@@ -13,15 +13,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
 const uuid_1 = require("uuid");
 const simple_git_1 = require("simple-git");
 const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
 const aws_sdk_1 = require("aws-sdk");
 const dotenv_1 = __importDefault(require("dotenv"));
+const lib_1 = require("./lib");
 const app = (0, express_1.default)();
 dotenv_1.default.config();
 app.use(express_1.default.json());
+app.use((0, cors_1.default)());
 app.post("/deploy", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { url } = req.body;
     const baseDirectory = "/home/giridhar/web/projects/deployhub/clones";
@@ -45,18 +47,26 @@ app.post("/deploy", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         });
         return;
     }
-    const folders = fs_1.default.readdirSync(baseDirectory + "/" + randomId, {
-        recursive: true,
-        encoding: "utf-8",
-    });
-    const filesPath = folders.map((folder) => {
-        return path_1.default.join(baseDirectory, randomId, folder);
-    });
-    filesPath.forEach(file => {
-        console.log(file);
-        // const fileData = fs.readFileSync(file,{encoding:"utf-8"})
+    // 
+    const allFiles = (0, lib_1.getAllFiles)(baseDirectory + "/" + randomId);
+    // const folders = fs.readdirSync(baseDirectory + "/" + randomId, {
+    //   recursive: true,
+    //   encoding: "utf-8",
+    // });
+    // const filesPath = folders.map((folder) => {
+    //   if (fs.statSync(folder).isDirectory()) {
+    //   }
+    //   return path.join(baseDirectory, randomId, folder);
+    // });
+    allFiles.forEach((file) => __awaiter(void 0, void 0, void 0, function* () {
+        // console.log(file);
+        const fileData = fs_1.default.readFileSync(file, { encoding: "utf-8" });
         // console.log(fileData);
-    });
+        // await s3.getSignedUrlPromise('putObject',{Bucket: 'deployhub',Key: allFiles[0], Expires: 300})
+        s3.upload({ Bucket: "deployhub", Key: file.slice(baseDirectory.length + 1), Body: fileData }, (err, data) => {
+            console.log("uploaded sucessfully");
+        });
+    }));
     res.json({
         id: randomId,
     });
