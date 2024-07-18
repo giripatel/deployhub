@@ -1,0 +1,17 @@
+{
+  "name": "deployer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/redis": "^4.0.11",
+    "aws-sdk": "^2.1659.0",
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
+    "redis": "^4.6.15"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.11"
+  }
+}
