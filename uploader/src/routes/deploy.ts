@@ -56,17 +56,23 @@ deployRouter.post("/deploy", async (req: Request, res: Response) => {
   await publisher.hSet("status",repoId,"uploaded");
 
   res.json({
-    id: repoId,
+    // id: repoId,
+    id: "04a01c45-b423-4554-ab27-18bcbdd0e2ec",
   });
 });
 
+
 deployRouter.get("/deploy/status", async (req:Request , res: Response) =>{
 
-    const {repoId} = req.query;
-    const status = await subscriber.hGet("status", repoId as string)
+    const {id} = req.query;
+    console.log(id)
+    const status = await subscriber.hGet("status", id as string)
+
+    const url = `http://${id}.deployhub.com:3001/index.html`
 
     res.json({
-      status
+      status,
+      url
     })
 
 

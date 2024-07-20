@@ -27,12 +27,16 @@ async function poll(){
         if (!response?.element) {
             return;
         }
-        console.log("Entered loop 1");
         
-        await downloadS3Folder(`clones/${"04a01c45-b423-4554-ab27-18bcbdd0e2ec"}`, bucket, downloadPath);
-        await buildRepo(path.join(folderPath,"04a01c45-b423-4554-ab27-18bcbdd0e2ec"));
-        await uploadToS3("04a01c45-b423-4554-ab27-18bcbdd0e2ec");
+        // await downloadS3Folder(`clones/${"04a01c45-b423-4554-ab27-18bcbdd0e2ec"}`, bucket, downloadPath);
+        // await buildRepo(path.join(folderPath,"04a01c45-b423-4554-ab27-18bcbdd0e2ec"));
+        // await uploadToS3("04a01c45-b423-4554-ab27-18bcbdd0e2ec");
 
+        await new Promise((resolve) => setTimeout(() => {
+            resolve("")
+        }, 10000))
+        console.log("deployed");
+        
         subscriber.hSet("status", "04a01c45-b423-4554-ab27-18bcbdd0e2ec", "deployed")
 
     }
