@@ -1,6 +1,4 @@
 import { AWSError, S3 } from 'aws-sdk'
-import { PromiseResult } from 'aws-sdk/lib/request';
-import axios from 'axios';
 import dotenv from 'dotenv'
 import fs from 'fs'
 import path, { resolve } from 'path';
@@ -15,18 +13,23 @@ const s3 = new S3({
 
 export async function downloadS3Folder(repo: any, bucket: string, downloadPath: string){
 
+  console.log("From download 1");
   const allFiles = await s3.listObjectsV2({
     Bucket: bucket,
-    Prefix: repo
+    Prefix: repo,
   }).promise();
 
+  console.log("From download 2");
   const allPromises = allFiles.Contents?.map(async ({Key}) =>{
-    return new Promise(async (resolve) => {
+    console.log("From download 3");
+    return new Promise((resolve) => {
+      
       if(!Key) {
         resolve("");
         return;
       }
-
+      console.log("From download 3");
+      
       const finalOutputPath = path.join(downloadPath, Key);
       const outputFile = fs.createWriteStream(finalOutputPath);
       const dirName = path.dirname(finalOutputPath);

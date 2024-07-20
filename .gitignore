@@ -2,10 +2,9 @@
 # compiled output
 /dist
 dist
-
 /tmp
 /out-tsc
-/clones
+repos
 # Runtime data
 pids
 *.pid

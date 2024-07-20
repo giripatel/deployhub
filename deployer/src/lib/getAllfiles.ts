@@ -4,6 +4,9 @@ import path from "path";
 export const getAllFiles = (folderPath: string) => {
     let response: string[] = [];
 
+    console.log("From get all files");
+    
+
     const allFilesAndFolders = fs.readdirSync(folderPath);
     allFilesAndFolders.forEach(file => {
         const fullFilePath = path.join(folderPath, file);
